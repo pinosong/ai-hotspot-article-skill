@@ -41,7 +41,7 @@ description: 抓取过去 24 小时 AI 圈最热话题，截图取证，生成�
 - **视频优先于视频截图**（2026-10-16 用户原话："如果是视频的话，你能不能直接把视频放上去？不要放视频截图。"）：Playwright `recordVideo` 或下载原片后剪辑关键片段（30-60 秒），内嵌进 HTML 或作为独立 mp4 交付。
 - **不要把低分辨率帧放大当高清用**（2026-10-16 教训）：YouTube 降级拿到的 640×360 帧，放大即糊；小图缩小显示，或换高清信息图做紧凑裁切。
 - **YouTube 下载被限速**：换 `--extractor-args "youtube:player_client=android"`、隔几分钟重试一次（2026-10-16 Brayden 片重试成功）。
-- **YouTube 观看模式截屏方案已验证不可行**（2026-10-16）：本环境 IP 被 YouTube 判定异常流量（"unusual traffic from your computer network"），headless 浏览器连播放页都打不开，更拿不到高清流。不要走这条路；截图只能用 yt-dlp android client 的 360p（紧凑裁切 + 原生尺寸显示，不放大），或找用户要高清原图。
+- **YouTube 高清截图走浏览器任务**（2026-10-16 验证可行）：本机 headless 浏览器会被 YouTube 判异常流量（连播放页都打不开），yt-dlp 也只能拿到 360p；但**租赁 VM 的 browser.spawn_task 能正常打开 YouTube，画质最高 4K**。做法：spawn_task 打开视频页 → steer 切 1080p（齿轮>画质）、静音、按 t 进影院模式 → 定位到目标时间戳暂停 → user_requested_screenshot=true 拿图。实测 Kevin 视频（7:58）在 2:53、7:26 拿到 1920px 锐利截图。注意先让任务读简介章节列表定位时间戳。
 - **relay 排错**：Playwright 经 relay 打不开某站时，先用 `curl -x http://127.0.0.1:18080` 测连通性，区分网络问题还是页面加载问题。
 
 ### Phase 4：写稿（公众号 HTML）
